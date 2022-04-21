@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <title>Cloud CYMG</title>
+    <style>
+        table {
+            width: 100% !important;
+            
+        }
+        .create_folder{
+               border-radius: 8px;
+                padding: 8px 12px;
+        }
+          .create_folder:hover{
+            background-color: rgb(226, 226, 226);
+            cursor: pointer;
+    
+        
+          }
+    </style>
+</head>
+
+<body>
+    <div class="container my-5">
+    <%- include('error'); -%>
+
+            <div class="d-flex flex-column justify-content-center my-3 align-items-center" >
+
+            <form action='<%= pathupload  %>' method='post' enctype='multipart/form-data'>
+            <div class="form-group flex-column d-flex justify-content-center align-items-center" >
+                <input type='file' name='filetoupload' multiple class="form-control"><br><br> 
+                <!-- <input type='file' class="form-control" id='imgup1' name='files[]' directory='' webkitdirectory='' mozdirectory='' onchange='fileinput(this)'/> <br> -->
+                <input type='submit' class="btn btn-primary" style="max-width: 5rem !important; ">
+            </div>
+            </form>
+
+          
+          
+            <div class="modal" id="modal_newfolder">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+            
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <div class="d-flex ">
+                                <h4 class="modal-title mr-3">Create Folder</h4>
+                                <img src="/images/add-folder.png" alt="add-folder.png" style="width: 30px;height:30px;">
+                            </div>
+                           
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <form action="/createfolder" method="post">
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                         
+                                <div class="form-group">
+                                    <label for="name_folder">Folder Name :</label>
+                                    <input type="text" name="name_folder" class="form-control" placeholder="New folder....." id="name_folder">
+                                </div>
+                        
+                        
+                        </div>
+            
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancle</button>
+                            <input type="submit"  class="btn btn-primary"  value="Create">
+                       
+                        </div>
+                        </form>
+            
+                    </div>
+                </div>
+            </div>
+           
+
+            </div>  
+        <% if(historyback != null ) { %>
+            <div class="d-flex mb-3">
+                <a href="<%= historyback %>" style="text-decoration: none; color:black">
+                <img src="/images/back.png" alt="" style="width: 30px;height:30px;">
+                Back
+                </a>
+            </div>
+        <% } %>
+
+            <%
+            storage_persent= "style=width:"+parseFloat(((Storage-Spaceused)*100)/Storage).toFixed(2)+"%" 
+            %>
+
+           
+             
+            <%
+             persent=parseFloat(((Storage-Spaceused)*100)/Storage).toFixed(2)+"%" 
+            
+            %>
+        <div class="w-100 mb-3">
+            <div class="mb-4">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <img src="/images/cloud-data.png" alt="cloud-data.png" style="width: 35px;height:35px;">
+                        <b> Storage Space</b> <br>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center create_folder" data-toggle="modal" data-target="#modal_newfolder">
+                        <img src="/images/add-folder.png" alt="add-folder.png" style="width: 30px;height:30px;">
+                        <p class="my-0 ml-2">New Folder</p>
+                      
+                    </div>
+                    
+                </div>
+            <% if(parseFloat(((Storage-Spaceused)*100)/Storage).toFixed(2) < 90 ) { %>
+            <div class="progress my-3 ">
+                <div class="progress-bar bg-info"  
+                <%= storage_persent %>
+                > <%= persent  %> </div>
+            </div> 
+            <% }else { %>
+                <div class="progress my-3 ">
+                    <div class="progress-bar bg-danger" <%= storage_persent %>
+                        > <%= persent %>
+                    </div>
+                </div>
+            <% } %>
+            Used : <b><%= parseFloat(Storage-Spaceused).toFixed(2) %>  GB </b>From <b> <%=  parseFloat(Storage).toFixed(0) %> GB </b>
+          
+          
+        </div>
+  
+        <table class="table table-striped">
+            <tr>
+                <th>Name</th>
+                <th>Last modified</th>
+                <th>Size</th>
+                <th>Download</th>
+                <th>Delete</th>
+            </tr>
+            <% count = 0  %>
+            <% for(i=0 ; i < filenames.length ;i++) {%>
+                <tr>
+                    <td>
+                    <% if(filenames[i].size !='-' ) { %>
+                     
+                        <img src="/images/documents.png" alt="" style="width: 20px;height:20px;">
+                            <a href='<%= filenames[i].urlpreview %>' >
+                                <%=filenames[i].name %>
+                            </a>
+                    <% }else { %>
+                             <img src="/images/folder.png" alt="" style="width: 20px;height:20px;">
+                            <a href='<%= filenames[i].urlpreview %>'>
+                                <%=filenames[i].name %>/
+                            </a>
+                    <% }%>
+                    </td>
+                    <td>
+                        <%=filenames[i].day %>
+                         <%=filenames[i].time %>
+                    </td>
+                    <td>
+               
+                        <% if(filenames[i].size !='-' ) { %>
+                           
+                            <% if(filenames[i].size/1024 <= 1 ) { %>
+
+                                 <%= filenames[i].size  %> KB
+                            <% }else if(filenames[i].size/1024 > 1 ) { %>
+                                <%=  parseFloat(filenames[i].size/1024).toFixed(2) %> MB
+                            <% }%>
+
+                        <% }else { %>
+                            -
+                        <% }%>
+                            
+                       
+                    </td>
+                    <td>
+                        <% if(filenames[i].download  == '-') { %>
+                                <%=filenames[i].download %>
+                        <% }else {  %>
+                            <a href='<%=filenames[i].download %>' class="btn btn-success" download>Download</a>
+                        <% }%>
+                    </td>
+                    <td>
+                        <% if(filenames[i].delete =='-' ) { %>
+                            <%=filenames[i].delete %>
+                        <% }else { %>
+                        
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal<%= count %>">
+                        Delete
+                    </button>
+                    
+               
+                    <div class="modal" id="myModal<%= count %>">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                    
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Delete File</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                    
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    Are you sure you want to delete  <span class="text-danger" > <%=filenames[i].name %> </span> ?
+                                </div>
+                    
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                                    <a class="btn btn-danger"  href='<%=filenames[i].delete %>'>Delete</a>
+                                </div>
+                            
+              
+                            </div>
+                        </div>
+                    </div>
+                    <% }%>
+                    </td>
+                </tr>
+                    <% count++ %>
+            <% } %>
+        </table>
+
+            </div>
+    </div>
+</body>
+
+</html>
